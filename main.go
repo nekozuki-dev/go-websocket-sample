@@ -1,6 +1,6 @@
 package main
 
-import "go_websocket/external"
+import "go-websocket-sample/external"
 
 func main() {
 	router := external.NewRouter()

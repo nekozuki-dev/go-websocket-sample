@@ -2,7 +2,7 @@ package wsservice
 
 import (
 	"fmt"
-	"go_websocket/app"
+	"go-websocket-sample/app"
 	"sync"
 
 	"github.com/gorilla/websocket"

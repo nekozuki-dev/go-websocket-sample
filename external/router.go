@@ -2,8 +2,8 @@ package external
 
 import (
 	"fmt"
-	"go_websocket/app"
-	"go_websocket/external/wsservice"
+	"go-websocket-sample/app"
+	"go-websocket-sample/external/wsservice"
 )
 
 type Router interface {
