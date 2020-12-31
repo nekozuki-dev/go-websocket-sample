@@ -43,6 +43,7 @@ func NewListener(port int) Listener {
 }
 
 func (lis *listener) Run() {
+	http.HandleFunc("/", pageHandle)
 	http.HandleFunc("/ws", lis.handleConnection)
 
 	servAddr := fmt.Sprintf(":%d", lis.port)
@@ -50,6 +51,57 @@ func (lis *listener) Run() {
 	if err := http.ListenAndServe(servAddr, nil); err != nil {
 		panic(err)
 	}
+}
+
+const page = `
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8">
+        <title>WebSocketSample</title>
+    </head>
+    <script>
+        var sock = new WebSocket('ws://127.0.0.1:9080/ws');
+
+        var send = function(msgid, body) {
+            var packet = {
+                'id': msgid,
+                'body': body
+            };
+            var json = JSON.stringify(packet)
+            sock.send(json)
+        };
+
+        sock.addEventListener('open', function(e) {
+            console.log('Connect success.')
+            document.getElementById('banana').addEventListener('click',function(e) {
+                var msg = {
+                    'msg': 'ばななをあげる'
+                };
+                send(1, msg)
+            });
+        });
+
+        sock.addEventListener('close', function(e) {
+            console.log('Connect close.')
+        });
+
+        sock.addEventListener('message', function(e) {
+            var json = JSON.parse(e.data)
+            var msgid = json.id;
+            var body = json.body;
+            if (msgid == 1) {
+                console.log(body.msg);
+            }
+        });
+    </script>
+    <body>
+        <input type="button" id="banana" value="バナナを送る" />
+    </body>
+</html>
+`
+
+func pageHandle(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, page)
 }
 
 func (lis *listener) RegisterAcceptHandler(handler AcceptHandler) {
