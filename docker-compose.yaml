@@ -1,0 +1,16 @@
+version: "3.7"
+
+services:
+  nginx-nchan:
+    image: weseek/nginx-nchan
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - ./nginx:/etc/nginx/conf.d
+  app:
+    build:
+      context: .
+    container_name: go_websocket
+    ports:
+      - 9080:9080
